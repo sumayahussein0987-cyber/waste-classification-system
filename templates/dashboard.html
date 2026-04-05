@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Waste Classification Stats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0e1a 0%, #1a1f2e 100%);
+            color: #f3f4f6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid #374151;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #9ca3af;
+        }
+
+        .nav-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-block;
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #1f2937;
+            color: #f3f4f6;
+            border: 1px solid #374151;
+        }
+
+        .btn-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            cursor: pointer;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #111827;
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid #374151;
+        }
+
+        .stat-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .stat-value {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .stat-card.plastic {
+            border-bottom: 4px solid #10b981;
+        }
+        
+        .stat-card.metal {
+            border-bottom: 4px solid #3b82f6;
+        }
+        
+        .stat-card.paper {
+            border-bottom: 4px solid #f59e0b;
+        }
+
+        .chart-section {
+            background: #111827;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 30px;
+            border: 1px solid #374151;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .bar-container {
+            margin: 16px 0;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .bar {
+            height: 32px;
+            border-radius: 8px;
+            transition: width 0.5s ease;
+        }
+
+        .bar.plastic {
+            background: #10b981;
+        }
+        
+        .bar.metal {
+            background: #3b82f6;
+        }
+        
+        .bar.paper {
+            background: #f59e0b;
+        }
+
+        .recent-section {
+            background: #111827;
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid #374151;
+        }
+
+        .recent-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .detection-list {
+            list-style: none;
+        }
+
+        .detection-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #374151;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .detection-type {
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .detection-type.plastic {
+            color: #10b981;
+        }
+        
+        .detection-type.metal {
+            color: #3b82f6;
+        }
+        
+        .detection-type.paper {
+            color: #f59e0b;
+        }
+
+        .detection-confidence {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        .detection-time {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Recycling Dashboard</h1>
+            <p>Real-time waste classification statistics</p>
+            <div class="nav-buttons">
+                <a href="/" class="btn btn-secondary">← Back to Classifier</a>
+                <button onclick="clearHistory()" class="btn btn-danger">🗑️ Clear History</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">♻️</div>
+                <div class="stat-value" id="totalCount">{{ stats.total }}</div>
+                <div class="stat-label">Total Items Recycled</div>
+            </div>
+            <div class="stat-card plastic">
+                <div class="stat-icon">🟢</div>
+                <div class="stat-value" id="plasticCount">{{ stats.plastic }}</div>
+                <div class="stat-label">Plastic Items</div>
+            </div>
+            <div class="stat-card metal">
+                <div class="stat-icon">🔵</div>
+                <div class="stat-value" id="metalCount">{{ stats.metal }}</div>
+                <div class="stat-label">Metal Items</div>
+            </div>
+            <div class="stat-card paper">
+                <div class="stat-icon">🟠</div>
+                <div class="stat-value" id="paperCount">{{ stats.paper }}</div>
+                <div class="stat-label">Paper Items</div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-title">📈 Waste Distribution</div>
+            <div id="chartContainer">
+                <!-- Chart will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="recent-section">
+            <div class="recent-title">📋 Recent Detections</div>
+            <div id="recentList">
+                <!-- Recent detections will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Powered by YOLOv8 + Flask + SQLite | Real-time Waste Classification</p>
+        </div>
+    </div>
+
+    <script>
+        // Load stats from server
+        async function loadStats() {
+            try {
+                const response = await fetch('/health');
+                const data = await response.json();
+                
+                // Get full stats from dashboard endpoint
+                const statsResponse = await fetch('/dashboard-data');
+                if (statsResponse.ok) {
+                    const stats = await statsResponse.json();
+                    updateDashboard(stats);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        function updateDashboard(stats) {
+            const total = stats.total || 0;
+            const plastic = stats.plastic || 0;
+            const metal = stats.metal || 0;
+            const paper = stats.paper || 0;
+            
+            // Update counts
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('plasticCount').textContent = plastic;
+            document.getElementById('metalCount').textContent = metal;
+            document.getElementById('paperCount').textContent = paper;
+            
+            // Update chart
+            const maxVal = Math.max(plastic, metal, paper, 1);
+            const chartHtml = `
+                <div class="bar-container">
+                    <div class="bar-label">
+                        <span>🟢 Plastic</span>
+                        <span>${plastic} (${(plastic / maxVal * 100).toFixed(1)}%)</span>
+                    </div>
+                    <div class="bar plastic" style="width: ${(plastic / maxVal * 100)}%"></div>
+                </div>
+                <div class="bar-container">
+                    <div class="bar-label">
+                        <span>🔵 Metal</span>
+                        <span>${metal} (${(metal / maxVal * 100).toFixed(1)}%)</span>
+                    </div>
+                    <div class="bar metal" style="width: ${(metal / maxVal * 100)}%"></div>
+                </div>
+                <div class="bar-container">
+                    <div class="bar-label">
+                        <span>🟠 Paper</span>
+                        <span>${paper} (${(paper / maxVal * 100).toFixed(1)}%)</span>
+                    </div>
+                    <div class="bar paper" style="width: ${(paper / maxVal * 100)}%"></div>
+                </div>
+            `;
+            document.getElementById('chartContainer').innerHTML = chartHtml;
+            
+            // Update recent detections
+            if (stats.recent && stats.recent.length > 0) {
+                let recentHtml = '<div class="detection-list">';
+                for (const det of stats.recent) {
+                    recentHtml += `
+                        <div class="detection-item">
+                            <div>
+                                <span class="detection-type ${det[0]}">${det[0].toUpperCase()}</span>
+                                <span class="detection-confidence">(${det[1]}% confidence)</span>
+                            </div>
+                            <div class="detection-time">${det[2]}</div>
+                        </div>
+                    `;
+                }
+                recentHtml += '</div>';
+                document.getElementById('recentList').innerHTML = recentHtml;
+            } else {
+                document.getElementById('recentList').innerHTML = '<div class="empty-state"><p>No detections yet. Go to the classifier and start recycling!</p></div>';
+            }
+        }
+        
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear all detection history?')) {
+                fetch('/api/clear-history', { method: 'POST' })
+                    .then(response => response.json())
+                    .then(() => {
+                        loadStats();
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to clear history');
+                    });
+            }
+        }
+        
+        // Load stats on page load
+        loadStats();
+        // Refresh every 10 seconds
+        setInterval(loadStats, 10000);
+    </script>
+</body>
+</html>

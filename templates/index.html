@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>AI Waste Classifier - YOLO Powered</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">♻️</span>
+                <span class="logo-text">AI Waste Classifier</span>
+            </div>
+            <p class="tagline">YOLO-Powered Recycling Intelligence</p>
+        </header>
+
+        <main class="main">
+            <div class="camera-panel">
+                <div class="video-wrapper">
+                    <video id="video" autoplay playsinline muted></video>
+                    <canvas id="canvas" style="display: none;"></canvas>
+                    <div class="camera-overlay" id="cameraOverlay">
+                        <div class="overlay-text">Camera Ready</div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button class="btn btn-primary" id="captureBtn">
+                        <span class="btn-icon">📸</span>
+                        Capture & Classify
+                    </button>
+                    <button class="btn btn-secondary" id="uploadBtn">
+                        <span class="btn-icon">📁</span>
+                        Upload Image
+                    </button>
+                </div>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+
+            <div class="result-panel" id="resultPanel">
+                <div class="result-header">
+                    <h3>Detection Results</h3>
+                    <div class="esp32-status" id="esp32Status">
+                        <span class="status-dot"></span>
+                        <span>ESP32: Checking...</span>
+                    </div>
+                </div>
+                <div id="resultContent" class="result-content">
+                    <div class="empty-state">
+                        <div class="empty-icon">🔍</div>
+                        <p>Capture or upload an image to see detection results</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Powered by YOLOv8 | Real-time Waste Classification</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
